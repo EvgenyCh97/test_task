@@ -1,9 +1,13 @@
+import os
+import shutil
+
 import pytest
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, force_authenticate
 
 from api.models import File, User
 from api.views import FileViewSet, UserViewSet
+from file_loader.settings import MEDIA_ROOT
 
 
 @pytest.fixture
@@ -95,3 +99,8 @@ def test_file_viewset(test_user):
     force_authenticate(request, user=test_user)
     response = view(request, pk=1)
     assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    # delete test_user dir after tests completed
+    test_media_dir = str(MEDIA_ROOT) + '\\' + 'test_user'
+    if os.path.exists(test_media_dir):
+        shutil.rmtree(test_media_dir)
