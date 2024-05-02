@@ -1,0 +1,9 @@
+venv
+db.sqlite3
+test_db.sqlite3
+.idea
+.vscode
+.env
+__pycache__
+*.pyc
+media
