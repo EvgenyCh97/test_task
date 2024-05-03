@@ -48,7 +48,6 @@ class UserViewSet(viewsets.ModelViewSet):
 class FileViewSet(viewsets.ModelViewSet):
     queryset = File.objects.all()
     serializer_class = FileSerializer
-
     permission_classes = [IsFileOwner]
 
     def perform_create(self, serializer):
