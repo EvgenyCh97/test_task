@@ -80,14 +80,15 @@ def test_file_viewset(test_user):
 
     # check read
     view = FileViewSet.as_view({'get': 'retrieve'})
-    request = factory.get('/files/1/')
+    request = factory.get(f'/files/{file.id}/')
     force_authenticate(request, user=test_user)
     response = view(request, pk=file.id)
     assert response.status_code == status.HTTP_200_OK
 
     # check update (PATCH)
     view = FileViewSet.as_view({'patch': 'partial_update'})
-    request = factory.patch('/files/1/', {'file_name': 'updated_file.txt'})
+    request = factory.patch(f'/files/{file.id}/',
+                            {'file_name': 'updated_file.txt'})
     force_authenticate(request, user=test_user)
     file = File.objects.first()
     response = view(request, pk=file.id)
@@ -95,7 +96,7 @@ def test_file_viewset(test_user):
 
     # check delete
     view = FileViewSet.as_view({'delete': 'destroy'})
-    request = factory.delete('/files/1/')
+    request = factory.delete(f'/files/{file.id}/')
     force_authenticate(request, user=test_user)
     response = view(request, pk=1)
     assert response.status_code == status.HTTP_204_NO_CONTENT
