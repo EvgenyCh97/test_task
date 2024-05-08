@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework.exceptions import MethodNotAllowed
 
-from file_loader.settings import MEDIA_ROOT
+from root_app.settings import MEDIA_ROOT
 
 from .models import File
 from .permissions import IsFileOwner, IsSameUser
@@ -24,7 +24,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if (updated_data.get('username') and
                 updated_data.get('username') != serializer.instance.username):
             # rename users media dir
-            old_path = str(MEDIA_ROOT) + '\\' + serializer.instance.username
+            old_path = MEDIA_ROOT / serializer.instance.username
             new_path = '\\'.join(old_path.split('\\')[:-1] +
                                  [updated_data['username']])
             os.rename(src=old_path, dst=new_path)

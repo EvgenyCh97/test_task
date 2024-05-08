@@ -7,7 +7,7 @@ class User(AbstractUser):
 
 
 def user_directory_path(instance, filename):
-    return "{0}/{1}".format(instance.owner.username, instance.file_name)
+    return "user_{0}/{1}".format(instance.owner_id, instance.file_name)
 
 
 class File(models.Model):

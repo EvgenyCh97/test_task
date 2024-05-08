@@ -5,9 +5,9 @@ import pytest
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, force_authenticate
 
-from api.models import File, User
-from api.views import FileViewSet, UserViewSet
-from file_loader.settings import MEDIA_ROOT
+from file_loader.models import File, User
+from file_loader.views import FileViewSet, UserViewSet
+from root_app.settings import MEDIA_ROOT
 
 
 @pytest.fixture
