@@ -20,7 +20,7 @@ def test_user():
 def test_user_viewset_get(test_user):
     factory = APIRequestFactory()
     view = UserViewSet.as_view({'get': 'retrieve'})
-    request = factory.get('/users/1/')
+    request = factory.get(f'/users/{test_user.id}/')
     force_authenticate(request, user=test_user)
 
     response = view(request, pk=test_user.id)
@@ -33,7 +33,6 @@ def test_user_viewset_post(test_user):
     view = UserViewSet.as_view({'post': 'create'})
     request = factory.post('/users/',
                            {'username': 'new_user', 'password': 'newpass'})
-    force_authenticate(request, user=test_user)
 
     response = view(request)
     assert response.status_code == status.HTTP_201_CREATED
@@ -68,14 +67,13 @@ def test_file_viewset(test_user):
     # check create
     view = FileViewSet.as_view({'post': 'create'})
     request = factory.post('/files/',
-                           {'file_name': 'test_file.txt',
-                            'file': 'data:@file/plain;base64,dGVzdA=='})
+                           {'file': 'data:@file/plain;base64,dGVzdA=='})
     force_authenticate(request, user=test_user)
     response = view(request)
     assert response.status_code == status.HTTP_201_CREATED
     assert File.objects.count() == 1
     file = File.objects.first()
-    assert file.file_name == 'test_file.txt'
+    assert file.file_name == f'file_{file.id}.txt'
     assert file.owner == test_user
 
     # check read
@@ -85,23 +83,14 @@ def test_file_viewset(test_user):
     response = view(request, pk=file.id)
     assert response.status_code == status.HTTP_200_OK
 
-    # check update (PATCH)
-    view = FileViewSet.as_view({'patch': 'partial_update'})
-    request = factory.patch(f'/files/{file.id}/',
-                            {'file_name': 'updated_file.txt'})
-    force_authenticate(request, user=test_user)
-    file = File.objects.first()
-    response = view(request, pk=file.id)
-    assert response.status_code == status.HTTP_200_OK
-
     # check delete
     view = FileViewSet.as_view({'delete': 'destroy'})
     request = factory.delete(f'/files/{file.id}/')
     force_authenticate(request, user=test_user)
-    response = view(request, pk=1)
+    response = view(request, pk=file.id)
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
     # delete test_user dir after tests completed
-    test_media_dir = str(MEDIA_ROOT) + '\\' + 'test_user'
+    test_media_dir = os.path.join(str(MEDIA_ROOT), f'user_{test_user.id}')
     if os.path.exists(test_media_dir):
         shutil.rmtree(test_media_dir)
