@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth import get_user_model
 from drf_base64.fields import Base64FileField
 from rest_framework import serializers
@@ -37,7 +39,12 @@ class FileSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         instance = super().save(**kwargs)
-        file_path = instance.file.path
-        instance.file_path = file_path
-        instance.check_sum = get_check_sum(file_path)
+        old_path = instance.file.path
+        new_file_name = f'file_{str(instance.id)}.txt'
+        new_path = os.path.join(os.path.dirname(old_path), new_file_name)
+        os.rename(src=old_path, dst=new_path)
+        instance.file.name = os.path.join(os.path.dirname(instance.file.name),
+                                          new_file_name)
+        instance.file_name = new_file_name
+        instance.check_sum = get_check_sum(new_path)
         instance.save()
