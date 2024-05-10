@@ -11,7 +11,8 @@ def user_directory_path(instance, filename):
 
 
 class File(models.Model):
-    file_name = models.CharField(max_length=255, verbose_name='Имя файла')
+    file_name = models.CharField(max_length=255, verbose_name='Имя файла',
+                                 blank=True, null=True)
     file = models.FileField(upload_to=user_directory_path,
                             verbose_name='Файл')
     check_sum = models.CharField(max_length=255,
