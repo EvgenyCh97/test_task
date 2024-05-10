@@ -14,9 +14,6 @@ class File(models.Model):
     file_name = models.CharField(max_length=255, verbose_name='Имя файла')
     file = models.FileField(upload_to=user_directory_path,
                             verbose_name='Файл')
-    file_path = models.CharField(max_length=255,
-                                 verbose_name='Путь к файлу', blank=True,
-                                 null=True)
     check_sum = models.CharField(max_length=255,
                                  verbose_name='Контрольная сумма', blank=True,
                                  null=True)
